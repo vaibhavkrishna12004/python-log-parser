@@ -2,7 +2,7 @@
 
 
 A Python-based tool for analyzing Linux authentication logs and detecting potential brute-force attacks. The parser processes auth.log files to identify failed and successful SSH login attempts, extract source IP addresses, rank suspicious activity, and flag IPs that exceed a configurable failed login threshold. It also provides a summary of authentication events and recent failed login attempts to support incident response and security investigations. Built using Python, regular expressions, and collections.Counter, this project demonstrates practical log analysis, automation, and defensive security concepts. It can also be integrated with my Linux Incident Response Toolkit as part of a broader workflow for investigating Linux systems after a security incident
-Python tool that analyzes Linux auth logs, detects brute-force attacks, and identifies suspicious login activity. ⭐
+Python tool that analyzes Linux auth logs, detects brute-force attacks, and identifies suspicious login activity.
 Python Log Parser & Brute Force Detector
 
 A lightweight Python tool that analyzes Linux authentication logs to identify failed and successful login attempts, detect potential brute-force attacks, and generate actionable security insights.
