@@ -1,50 +1,89 @@
-# Log Parser
+# Python Log Parser — Brute Force Detector
 
+A Python tool that parses Linux authentication logs, detects brute force activity, flags suspicious IPs, and identifies potential compromise indicators.
 
-A Python-based tool for analyzing Linux authentication logs and detecting potential brute-force attacks. The parser processes auth.log files to identify failed and successful SSH login attempts, extract source IP addresses, rank suspicious activity, and flag IPs that exceed a configurable failed login threshold. It also provides a summary of authentication events and recent failed login attempts to support incident response and security investigations. Built using Python, regular expressions, and collections.Counter, this project demonstrates practical log analysis, automation, and defensive security concepts. It can also be integrated with my Linux Incident Response Toolkit as part of a broader workflow for investigating Linux systems after a security incident
-Python tool that analyzes Linux auth logs, detects brute-force attacks, and identifies suspicious login activity.
-Python Log Parser & Brute Force Detector
+## What It Does
 
-A lightweight Python tool that analyzes Linux authentication logs to identify failed and successful login attempts, detect potential brute-force attacks, and generate actionable security insights.
+- Parses /var/log/auth.log or any custom log file
+- Counts failed login attempts per IP address
+- Flags IPs exceeding a configurable threshold as brute force suspects
+- Extracts targeted usernames (root, admin, ubuntu etc)
+- Detects potential compromise — IPs that failed repeatedly then successfully logged in
+- Exports a structured JSON report
 
-## Features
+## Requirements
 
-- Parses Linux authentication logs ("auth.log")
-- Counts successful and failed login attempts
-- Extracts and ranks source IP addresses by failed login frequency
-- Detects potential brute-force attacks using a configurable threshold
-- Displays the most recent failed login attempts for quick investigation
+- Python 3
+- No external libraries required — uses standard library only
 
-## How It Works
+## Setup
 
-The script processes each line of the authentication log and searches for common SSH authentication events:
+Clone the repository:
 
-- Failed password — Records failed SSH login attempts.
-- Accepted password / Accepted publickey — Identifies successful authentications.
-
-Using Python's "re" module, the script extracts IP addresses from log entries, while "collections.Counter" ranks them based on the number of failed attempts. By default, any IP address with more than 5 failed login attempts is flagged as a potential brute-force source.
+    git clone https://github.com/vaibhavkrishna12004/python-log-parser.git
+    cd python-log-parser
 
 ## Usage
 
-python3 log_parser.py
+Basic scan using the included sample log:
+
+    python3 log_parser.py
+
+Custom log file and threshold:
+
+    python3 log_parser.py --log /var/log/auth.log --threshold 10
+
+Save JSON report to disk:
+
+    python3 log_parser.py --log sample_auth.log --threshold 5 --report
+
+## Arguments
+
+| Argument    | Default          | Description                            |
+|-------------|------------------|----------------------------------------|
+| --log       | sample_auth.log  | Path to the auth log file              |
+| --threshold | 5                | Failed attempts before brute force alert |
+| --report    | False            | Save JSON report to disk               |
+
+## Testing With Sample Log
+
+A sample_auth.log file is included in the repo for testing. It contains:
+
+- Brute force attempts from multiple IPs
+- Two compromise indicators (failed attempts followed by successful login)
+- Invalid user attempts
+- Clean successful logins
+
+Run against it directly:
+
+    python3 log_parser.py --log sample_auth.log --threshold 5
 
 ## Sample Output
 
-<img width="1920" height="1045" alt="Screenshot_2026-06-13_15-13-46" src="https://github.com/user-attachments/assets/f147a013-ced4-49a3-8f4f-72a5367ddf37" />
+    LOG PARSER - BRUTE FORCE DETECTOR
+    2026-06-27 09:00:00
+    Log File : sample_auth.log
+    Threshold: 5 failed attempts
+
+    [+] Total failed login attempts : 19
+    [+] Total successful logins     : 3
+    [+] Unique IPs flagged          : 2
+
+    [+] TOP OFFENDING IPs (threshold: 5):
+        45.33.32.156         6 attempts <-- [ALERT] BRUTE FORCE SUSPECTED
+        203.0.113.10         5 attempts <-- [ALERT] BRUTE FORCE SUSPECTED
+
+    [+] MOST TARGETED USERNAMES:
+        root                 6 attempts
+        test                 5 attempts
+        admin                3 attempts
+
+    [!!] POTENTIAL COMPROMISE DETECTED:
+         45.33.32.156 — 6 failed attempts before success
+         203.0.113.10 — 5 failed attempts before success
+
+## Why This Matters
+
+Brute force detection is one of the most fundamental SOC tasks. This tool replicates the core detection logic that SIEM platforms apply to authentication logs — parsing, aggregating, thresholding, and flagging compromise indicators — built from scratch in Python.
 
 
-Integration
-
-This project is designed to integrate seamlessly with the Linux Incident Response Toolkit, allowing it to be used as part of a broader incident response workflow for automated log analysis and threat detection.
-
-
-# Tools Used
-
-- Python 3
-- "re" – Regular expression-based IP extraction
-- "collections.Counter" – Frequency analysis
-- "datetime" – Timestamp generation
-
-## Purpose
-
-This project was developed to strengthen practical skills in Python, Linux system analysis, and security automation. It demonstrates the use of scripting to analyze authentication logs and identify suspicious login activity, reflecting real-world tasks performed in Security Operations Centers (SOC) and incident response environments.
