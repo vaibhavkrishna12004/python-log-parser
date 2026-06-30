@@ -101,7 +101,7 @@ Run against it directly:
 
 ## Why This Matters
 
-Brute force detection is one of the most fundamental SOC tasks. This tool replicates the core detection logic that SIEM platforms apply to authentication logs — parsing, aggregating, thresholding, geolocating, and flagging compromise indicators — built from scratch in Python.
+Brute force detection is one of the most fundamental SOC tasks. This tool replicates the core detection logic that SIEM platforms apply to authentication logs parsing, aggregating, thresholding, geolocating, and flagging compromise indicators built from scratch in Python.
 
 
 
