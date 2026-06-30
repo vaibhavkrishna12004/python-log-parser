@@ -20,7 +20,7 @@ A Python tool that parses Linux authentication logs, detects brute force activit
 
 ## Setup
 
-Clone the repository:
+Clone the repository: https://github.com/vaibhavkrishna12004/python-log-parser/blob/a0c79a9632ff775d5f22e365ff19b3d363ff183f/log_parser.py
 
     
 
