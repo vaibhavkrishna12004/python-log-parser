@@ -11,6 +11,7 @@ parser.add_argument("--log", default="sample_auth.log", help="Path to auth log f
 parser.add_argument("--threshold", type=int, default=5, help="Failed attempts before brute force alert")
 parser.add_argument("--report", action="store_true", help="Save JSON report to disk")
 parser.add_argument("--geo", action="store_true", help="Geolocate flagged IP addresses")
+parser.add_argument("--csv", action="store_true", help="Export flagged IPs to a CSV file")
 args = parser.parse_args()
 
 LOG_FILE = args.log
@@ -150,6 +151,26 @@ if args.report:
         json.dump(report, f, indent=4)
 
     print(f"\n[+] Report saved to: {REPORT_FILENAME}")
+
+# ─── CSV Export ──────────────────────────────────────────────────────────────
+
+if args.csv:
+    import csv
+    csv_filename = f"flagged_ips_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+
+    with open(csv_filename, "w", newline="") as f:
+        writer = csv.writer(f)
+        # Header row
+        writer.writerow(["IP Address", "Failed Attempts", "Location", "Compromise Indicator"])
+
+        # One row per flagged IP
+        for ip, count in ip_counts.most_common():
+            if count >= THRESHOLD:
+                location = geo_data.get(ip, "Not looked up") if args.geo else "Not looked up"
+                compromised = "YES" if ip in compromise_indicators else "No"
+                writer.writerow([ip, count, location, compromised])
+
+    print(f"\n[+] CSV report saved to: {csv_filename}")
 
 print("\n" + "=" * 50)
 print("   SCAN COMPLETE")
