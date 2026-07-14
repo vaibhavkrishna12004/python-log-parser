@@ -103,6 +103,11 @@ Run against it directly:
 
 Brute force detection is one of the most fundamental SOC tasks. This tool replicates the core detection logic that SIEM platforms apply to authentication logs parsing, aggregating, thresholding, geolocating, and flagging compromise indicators built from scratch in Python.
 
+## Output Files
+
+Each run with --csv or --report creates a timestamped file (flagged_ips_*.csv or report_*.json). These are disposable output artifacts, not part of the tool. To clear them:
+
+    rm flagged_ips_*.csv report_*.json
 
 
 
